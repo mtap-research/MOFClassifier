@@ -1,4 +1,4 @@
-## classifying “computation-ready” experimental metal-organic framework using PU-CGCNN (MOFClassifier).
+## MOFClassifier: A Machine Learning Approach for Validating Computation-Ready Metal-Organic Frameworks
                                                                                                                                           
 [![Static Badge](https://img.shields.io/badge/chemrxiv-2025.nvmnr.v1-brightgreen?style=flat)](https://doi.org/10.26434/x)
 ![GitHub repo size](https://img.shields.io/github/repo-size/mtap-research/MOFClassifier?logo=github&logoColor=white&label=Repo%20Size)
