@@ -8,7 +8,7 @@ setup(
         description="classifying “computation-ready” experimental metal-organic framework using PU-CGCNN",
         author="Guobin Zhao",
         author_email="sxmzhaogb@gmai.com",
-        url="https://github.com/sxm13/MOFClassifier/",
+        url="https://github.com/mtap-research/MOFClassifier/",
         long_description=open('README.md').read(),
         long_description_content_type='text/markdown',
         license="CC-BY-4.0",
