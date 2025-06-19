@@ -27,4 +27,4 @@ cifid, CLscores, CLscore = CLscore.predict(root_cif="./example.cif")
 -  **CLscore**: the mean CLscore of **CLscores**
                                                                                 
 ### Citation                                          
-**Guobin Zhao**, **Pengyu Zhao** and **Yongchul G. Chung**. 2025. **arXiv**.
+**Guobin Zhao**, **Pengyu Zhao** and **Yongchul G. Chung**. 2025. **arXiv.2506.14845**.
