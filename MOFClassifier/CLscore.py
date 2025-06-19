@@ -249,17 +249,35 @@ class Normalizer(object):
         self.mean = state_dict['mean']
         self.std = state_dict['std']
 
-def predict(root_cif, atom_init_file=os.path.join(package_directory, "atom_init.json"), model_dir = os.path.join(package_directory, "models")):
+def predict(
+    root_cifs,
+    atom_init_file=os.path.join(package_directory, "atom_init.json"),
+    model_dir=os.path.join(package_directory, "models"),
+    batch_size=512,
+):
     use_cuda = torch.cuda.is_available()
     models_100 = []
+
+    collate_fn = collate_pool
+    dataset_test = []
+    dataset_test.extend(
+        [
+            preprocess(root_cif=root_cif, atom_init_file=atom_init_file)
+            for root_cif in root_cifs
+        ]
+    )
+    test_loader = DataLoader(
+        dataset_test,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=1,
+        collate_fn=collate_fn,
+        pin_memory=use_cuda,
+    )
+    test_cif_ids = []
+
     for i in tqdm(range(1, 101)):
-        collate_fn = collate_pool
-        dataset_test = []
-        dataset_test.append(preprocess(root_cif=root_cif, atom_init_file=atom_init_file))
-        test_loader = DataLoader(dataset_test, batch_size=1, shuffle=True,
-                                num_workers=1, collate_fn=collate_fn,
-                                pin_memory=use_cuda)
-        modelpath = os.path.join(model_dir, 'checkpoint_bag_'+str(i)+'.pth.tar')
+        modelpath = os.path.join(model_dir, "checkpoint_bag_" + str(i) + ".pth.tar")
         if os.path.isfile(modelpath):
             model_checkpoint = torch.load(modelpath, weights_only=False,
                                           map_location=lambda storage, loc: storage)
@@ -286,25 +304,33 @@ def predict(root_cif, atom_init_file=os.path.join(package_directory, "atom_init.
         else:
             print("=> no model found at '{}'".format(modelpath))
         test_preds = []
-        test_cif_ids = []
         model.eval()
         for _, (input, batch_cif_ids) in enumerate(test_loader):
             with torch.no_grad():
                 if use_cuda:
-                    input_var = (Variable(input[0].cuda(non_blocking=True)),
-                                Variable(input[1].cuda(non_blocking=True)),
-                                input[2].cuda(non_blocking=True),
-                                [crys_idx.cuda(non_blocking=True) for crys_idx in input[3]])
+                    input_var = (
+                        Variable(input[0].cuda()),
+                        Variable(input[1].cuda()),
+                        input[2].cuda(),
+                        [crys_idx.cuda() for crys_idx in input[3]],
+                    )
                 else:
-                    input_var = (Variable(input[0]),
-                                Variable(input[1]),
-                                input[2],
-                                input[3])
+                    input_var = (
+                        Variable(input[0]),
+                        Variable(input[1]),
+                        input[2],
+                        input[3],
+                    )
             output = model(*input_var)
             test_pred = torch.exp(output.data.cpu())
             assert test_pred.shape[1] == 2
-            test_preds += test_pred[:, 1].tolist()
-            test_cif_ids += batch_cif_ids
-        models_100.extend(test_preds)
-    CLscore = np.mean(models_100)
-    return test_cif_ids[0], models_100, CLscore
+            test_preds += test_pred[:, 1]
+            if i == 1:
+                test_cif_ids += batch_cif_ids
+        models_100.append(test_preds)
+    models_100 = np.asarray(models_100).T
+    CLscore = np.mean(models_100, axis=1).tolist()
+    return [
+        (test_cif_ids[i], models_100[i].tolist(), CLscore[i])
+        for i in range(len(root_cifs))
+    ]
