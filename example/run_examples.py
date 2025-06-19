@@ -1,4 +1,4 @@
-from NCR_Classifier import predict
+from MOFClassifier.CLscore import predict
 import glob
 import csv
 from concurrent.futures import ProcessPoolExecutor, as_completed

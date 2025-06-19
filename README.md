@@ -19,12 +19,12 @@ pip install MOFClassifier
 ### Examples                                                                                                     
 ```python
 from MOFClassifier import CLscore
-cifid, CLscores, CLscore = CLscore.predict(root_cif="./example.cif")
+cifid, cl_scores, cl_score = CLscore.predict(root_cif="./example.cif")
 ```
 -  **root_cif**: the path of your structure
 -  **cifid**: the name of structure
--  **CLscores**: the CLscore predicted by 100 models (bags)
--  **CLscore**: the mean CLscore of **CLscores**
+-  **cl_scores**: the CLscore predicted by 100 models (bags)
+-  **cl_score**: the mean CLscore of **cl_scores**
                                                                                 
 ### Citation                                          
 **Guobin Zhao**, **Pengyu Zhao** and **Yongchul G. Chung**. 2025. **arXiv.2506.14845**.

@@ -28,7 +28,9 @@ if os.path.isdir(models_dir) and os.listdir(models_dir):
     pass
 else:
     os.makedirs(models_dir, exist_ok=True)
-    zip_url = "https://github.com/sxm13/MOFClassifier/archive/refs/heads/main.zip"
+    zip_url = (
+        "https://github.com/mtap-research/MOFClassifier/archive/refs/heads/main.zip"
+    )
     resp = requests.get(zip_url)
     resp.raise_for_status()
     with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
@@ -43,7 +45,7 @@ else:
                 dst.write(src.read())
             print(f"Extracted {rel_path} to models/")
 
-atom_url = "https://raw.githubusercontent.com/sxm13/MOFClassifier/main/MOFClassifier/atom_init.json"
+atom_url = "https://raw.githubusercontent.com/mtap-research/MOFClassifier/main/MOFClassifier/atom_init.json"
 atom_path = os.path.join(package_directory, "atom_init.json")
 
 if not os.path.exists(atom_path):
