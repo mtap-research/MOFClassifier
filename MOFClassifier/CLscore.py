@@ -310,7 +310,7 @@ def predict(root_cif,
         dataset_test = []
         dataset_test.append(preprocess(root_cif=root_cif, atom_init_file=atom_init_file))
         test_loader = DataLoader(dataset_test, batch_size=1, shuffle=True,
-                                num_workers=1, collate_fn=collate_fn,
+                                num_workers=0, collate_fn=collate_fn,
                                 pin_memory=use_cuda)
         modelpath = os.path.join(model_dir, 'checkpoint_bag_'+str(i)+'.pth.tar')
         if os.path.isfile(modelpath):
