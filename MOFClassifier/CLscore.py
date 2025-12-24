@@ -393,7 +393,7 @@ def predict_batch(
         dataset_test,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=1,
+        num_workers=0,
         collate_fn=collate_fn,
         pin_memory=use_cuda,
     )
